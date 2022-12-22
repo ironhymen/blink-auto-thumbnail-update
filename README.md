@@ -31,9 +31,6 @@ The script requires a `cred.json` file with your Blink account credentials in or
 }
 ```
 
-## License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ## Acknowledgements
 
