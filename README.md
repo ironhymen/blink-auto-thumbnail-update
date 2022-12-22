@@ -34,4 +34,4 @@ The script requires a `cred.json` file with your Blink account credentials in or
 
 ## Acknowledgements
 
-- [Blinkpy library](https://github.com/fronzbot/blinkpy) by [tchellomello](https://github.com/fronzbot)
+- [Blinkpy](https://github.com/fronzbot/blinkpy) by [Kevin Fronczak](https://github.com/fronzbot)
