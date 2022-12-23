@@ -2,12 +2,9 @@ import asyncio
 import os
 from datetime import datetime
 from pathlib import Path
-
-import PIL
 from blinkpy.auth import Auth
 from blinkpy.blinkpy import Blink
 from blinkpy.helpers.util import json_load
-
 
 # Set up the Blink and Auth objects
 blink = Blink()
@@ -43,44 +40,36 @@ async def main():
     image_dir = Path("storage") / today.strftime("%Y%m%d")
     image_dir.mkdir(parents=True, exist_ok=True)
 
-    # Continuously refresh and save images from the cameras
-    while True:
-        # Refresh the sync module and cameras
-        blink.refresh()
+    # Refresh the sync module and cameras
+    blink.refresh()
+    print(
+        f"Sync module and cameras refreshed at {today.strftime('%Y/%m/%d %H:%M:%S')}"
+    )
+
+    # Iterate through the cameras and save an image for each one
+    for name, camera in blink.cameras.items():
+        # Create a directory for the current camera, if it doesn't already exist
+        camera_dir = image_dir / name
+        camera_dir.mkdir(exist_ok=True)
+
+        # Update the image for the current camera
+        await update_image(camera)
+        await asyncio.sleep(10)  # Wait 10 seconds before saving the image
+
+        # Save the image to the appropriate directory
+        image_path = camera_dir / f"{name}{counter:02}.jpg"
+        await save_image(camera, image_path)
         print(
-            f"Sync module and cameras refreshed at {today.strftime('%Y/%m/%d %H:%M:%S')}"
+            f"Saved image to {image_path} at {today.strftime('%Y/%m/%d %H:%M:%S')}"
         )
+        # Wait 5 seconds before moving on to the next camera
+        await asyncio.sleep(5)
 
-        # Iterate through the cameras and save an image for each one
-        for name, camera in blink.cameras.items():
-            # Create a directory for the current camera, if it doesn't already exist
-            camera_dir = image_dir / name
-            camera_dir.mkdir(exist_ok=True)
-
-            # Update the image for the current camera
-            await update_image(camera)
-            await asyncio.sleep(10)  # Wait 10 seconds before saving the image
-
-            # Save the image to the appropriate directory
-            image_path = camera_dir / f"{name}{counter:02}.jpg"
-            await save_image(camera, image_path)
-            print(
-                f"Saved image to {image_path} at {today.strftime('%Y/%m/%d %H:%M:%S')}"
-            )
-            # Wait 5 seconds before moving on to the next camera
-            await asyncio.sleep(5)
-
-        # Increment the counter and save it to the file
-        counter += 1
-        with open(counter_file, "w") as f:
-            f.write(str(counter))
-        print(f"Saved counter value to file: {counter}")
-
-        # Pause for 20 minutes before refreshing again
-        await asyncio.sleep(1200)
-        print(
-            f"Paused for 20 minutes at {today.strftime('%Y/%m/%d %H:%M:%S')}"
-        )
+    # Increment the counter and save it to the file
+    counter += 1
+    with open(counter_file, "w") as f:
+        f.write(str(counter))
+    print(f"Saved counter value to file: {counter}")
 
 # Run the main function
 asyncio.run(main())
