@@ -1,6 +1,6 @@
 # Blink Camera Image Saver
 
-This repository contains a script that saves images from Blink camera devices to a local directory. The script can be set up as a cron job or task schedule to repeat at a set interval (e.g. every 20 minutes).
+This repository contains a script that refreshes the thumbnail inside the Blink App and then saves images from Blink camera devices to a local directory. The script can be set up as a cron job or task schedule to repeat at a set interval (e.g. every 20 minutes).
 
 ## Prerequisites
 
